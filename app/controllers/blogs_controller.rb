@@ -1,9 +1,10 @@
 class BlogsController < ApplicationController
+  before_action :set_blog, only: %i[ show edit update destroy ]
 
   # GET /blogs
   # GET /blogs.json
   def index
-    @blog = Blog.all
+    @blogs = Blog.all
   end
 
   # GET /blogs/1
@@ -45,18 +46,22 @@ class BlogsController < ApplicationController
   # DELETE /blogs/1
   # DELETE /blogs/1.json
   def destroy
-    @blog.destroy
-    render :index
+    if @blog.destroy
+      redirect_to blogs_path
+    else
+      @blogs = Blog.all
+      render :index
+    end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_blog
-      @blog = Blog.find(params[:action])
+      @blog = Blog.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def blog_params
-      params.require(:blog).permit(:title)
+      params.require(:blog).permit(:title, :content)
     end
 end
